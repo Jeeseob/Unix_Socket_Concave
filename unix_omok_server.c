@@ -3,7 +3,7 @@
 // sudo apt-get install libmysqlclient-dev
 
 // 컴파일 명령어는 아래와 같습니다. mysql을 활용하기 위해서 해당 문구를 입력해야하니 확인 부탁드립니다.
-// gcc unix_socket_network_concave_server.c -o unix_socket_network_concave_server -lmysqlclient -L/usr/lib64/mysql 
+// gcc unix_omok_server.c -o unix_omok_server -lmysqlclient -L/usr/lib64/mysql 
 
 // 할일 :  
 
