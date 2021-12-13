@@ -8,7 +8,7 @@
 
 // client에서 sever와 소켓 통신으로 승부 결과 및 ID보내기
 // mysql table 구성 및 서버 열기
-// table 구성에 맞춰 server 수정하기
+// table 구성에 맞춰 server 수정하
 // spring활용 webpage 및 server 구현
 // 
 #include "/usr/include/mysql/mysql.h" 

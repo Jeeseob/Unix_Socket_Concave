@@ -22,12 +22,6 @@ struct opt {		// 옵션을 담을 구조체 정의 및 선언
 	int p;			// p옵션의 set/clear를 확인해 주는 flag
 }opt;
 
-struct user {		// 로그인 기능을 구현하기 위한 구조체 정의
-	char name[20];
-	char pwd[20];
-};
-
-
 int start = 0;				// 타이머 구현을 위한 전역변수
 
 /*
