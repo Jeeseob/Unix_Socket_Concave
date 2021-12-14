@@ -11,9 +11,11 @@
 #include <pthread.h>
 
 #define PORTNUM 9000
+
 #define CLIENTNUM 3 // 클라이언트가 1명일 때 소켓기술자의 값은 3
 #define USERNUM 2	// user구조체 배열의 갯수
 #define NONE 0		// NONE, BLACK, WHITE 바둑판의 값들을 설정하기 위한 매크로
+
 #define BLACK 1
 #define WHITE 2
 
@@ -24,9 +26,8 @@ struct opt {		// 옵션을 담을 구조체 정의 및 선언
 
 int start = 0;				// 타이머 구현을 위한 전역변수
 
-/*
-바둑의 승리조건을 확인하기 위한 함수이다.
-*/
+
+// 오목의 룰에 해당하는 함수. 승리여부를 지속적으로 확인
 int Win_Check(int Board[][14]) {
    int i;                                          
    int j;
@@ -75,9 +76,8 @@ int Win_Check(int Board[][14]) {
    return 0;
 }
 
-/*
-오목판을 print하는 함수이다.
-*/
+
+// 오목판을 출력하는 함수이
 void print_board(int board[][14]){
 
 	printf("| A │ B │ C │ D │ E │ F │ G │ H │ I │ J │ K │ L │ M │ N │\n");
@@ -114,11 +114,11 @@ void put_board(char * buf, int board[][14], int *i,int *j){
 	char temp[BUFSIZ];
 	char* ptr;
 	char *temp_ptr;
-	int n, m;
+	int n,m;
 	
 	while(1){
 		strcpy(temp, buf);							// strtok() 함수는 원래의 문자열을 수정하기 때문에 temp변수에 복사해준다.
-		if(!(temp[1] == ',' || temp[2] == ',')){	// 문자열이 ','로 이루어지지 않았다면 다시 입력을 받는다.
+		if(!(temp[1] == ',')){	// 문자열이 'ㅇ,ㅇ'로 이루어지지 않았다면 다시 입력을 받는다.
 			if(!strcmp(temp, "quit")){				// 문자열이 quit이라면 종료한다.
 				return;
 			}
@@ -126,31 +126,30 @@ void put_board(char * buf, int board[][14], int *i,int *j){
 			scanf("%s", buf);
 			continue;
 		}
-		ptr = strtok(temp, ",");					// ','를 구분자로 사용해 temp의 값을 나눈다.
-		n = (int)strtol(ptr, &temp_ptr, 10);
-		ptr = strtok(NULL, ",");
-		m = (int)strtol(ptr, &temp_ptr, 10);
+
+		// 앞에 값은 A~N 까지 1byte이기 때문에, m은 1byte n은 이후 나머지 byte 를 사용하는 형식으로 만들 었다. 
+		m = ptr[0] - 65;
+		n = (int)strtol(ptr+2, &temp_ptr, 10);
 		
-		n--;	// 배열은 0~18의 값을 사용하기 때문에 하나씩 값을 빼준다.
 		
-		//m--;
-		m = m-65;
+		n--;	// 배열은 0~13의 값을 사용하기 때문에 하나씩 값을 빼준다.
+
 
 		if(n < 0 || n > 14){
-			printf("둘 수 있는 좌표값의 범위를 초과하였습니다.\n");
-    		printf("착수하여 주세요. 행:A~N   열:1~14\n");
+			printf("입력한 값이 가능한 범위를 초과하였습니다.\n");
+    		printf("알맞은 범위 내에서 착수하여 주세요. 열: A~N   행: 1~14\n");
     		scanf("%s", buf);
 			continue;
 		}
 		if(m < 0 || m > 14){
-			printf("둘 수 있는 좌표값의 범위를 초과하였습니다.\n");
-    		printf("착수하여 주세요. 행:A~N   열:1~14\n");
+			printf("입력한 값이 가능한 범위를 초과하였습니다.\n");
+    		printf("알맞은 범위 내에서 착수하여 주세요. 열: A~N   행: 1~14\n");
     		scanf("%s", buf);
 			continue;
 		}
 		if(board[n][m] != NONE){					// 이미 board에 BLACK이나 WHITE가 존재한다면 다시 입력을 받는다.
 			printf("돌이 이미 존재합니다. 다른 곳에 놓아주세요.\n");
-    		printf("착수하여 주세요. 행:A~N   열:1~14\n");
+    		printf("알맞은 위치 착수하여 주세요. 열: A~N   행: 1~14\n");
     		scanf("%s", buf);
 			continue;
 		}
@@ -243,6 +242,14 @@ void * omok(void* sd){
 		}
 	}
 	system("clear");
+	printf("		---------------------------------------------------\n\n");
+
+	printf("    			유닉스 2021학년도 2학기 프로젝트2 과제\n");
+	printf("		socket network를 활용한 실시간 오목게임 클라이언트 입니다.\n\n");
+
+	printf("		---------------------------------------------------\n");
+
+
 	
 	my_recv(sockfd, buf);						// client 0 : 상대방을 기다리는 중입니다. | client 1 : 대국을 시작합니다.
 	printf("%s",buf);
@@ -274,8 +281,8 @@ void * omok(void* sd){
 		
 		printf("사용자의 차례입니다.\n");	
 		printf("종료를 원하시면 quit을 적어주세요\n");
-		printf("돌을 둘 좌표를 입력하세요 행:1~14   열:A~N ex) 13,A\n");
-		printf("입력 [ex) 13,A] : ");
+		printf("돌을 둘 좌표를 입력하세요 열: A~N   행: 1~14\n");
+		printf("입력 [ex) H,8] : ");
 		scanf("%s",buf);						// 보낼 내용을 입력받는다.
 		
 		put_board(buf, board,&i, &j);
@@ -322,6 +329,7 @@ void * counting(void * arg){
 	printf("총 대국 시간 : %d초\n",timer);
 	return 0;
 }
+
 int main(int argc, char *argv[])
 {
 	int sockfd;
@@ -335,15 +343,9 @@ int main(int argc, char *argv[])
 	extern char* optarg;
 	extern int optind;
 
-		printf("---------------------------------------------------\n\n");
-
-	printf("      	유닉스 2021학년도 2학기 프로젝트2 과제      \n");
-	printf("		socket network를 활용한 실시간 오목게임 클라이언트 입니다.\n\n");
-
-	printf("---------------------------------------------------\n");
-	
 	
 	connect_request(&sockfd, &server_addr);
+
 	pthread_create(&omok_thread, NULL, omok, (void *)(intptr_t)sockfd);
 	pthread_create(&counting_thread, NULL, counting, NULL);
 	

@@ -61,12 +61,14 @@ int main(int argc, char **argv)
       int clnt_addr_size;
 	int i=0;
 
-	printf("------------------------------------------\n\n");
 
-	printf("      유닉스 2021학년도 2학기 프로젝트2 과제      \n");
-	printf("socket network를 활용한 실시간 오목게임 서버 입니다.\n\n");
+	printf("		---------------------------------------------------\n\n");
 
-	printf("------------------------------------------\n");
+	printf("    			유닉스 2021학년도 2학기 프로젝트2 과제\n");
+	printf("		socket network를 활용한 실시간 오목게임 서버 입니다.\n\n");
+
+	printf("		---------------------------------------------------\n");
+
 
 
 	MYSQL *conn = mysql_init(NULL);
@@ -87,7 +89,7 @@ int main(int argc, char **argv)
 	
 
 	*/
-	if(mysql_real_connect(conn,"localhost","root","root",NULL,0,NULL,0)==NULL) {
+	if(mysql_real_connect(conn,"localhost","root","rootroot","unix_omok":,0,NULL,0)==NULL) {
 		finish_with_error(conn);
 	}
 
@@ -146,8 +148,8 @@ int main(int argc, char **argv)
 		}
 
 		// 이후에 수정
-		// 넘어가는 데이터는 /흑돌,백돌 ID/ 승리한 ID/ 게임 수행 시간/ 으로 수정한다.
-		snprintf(query,64,"insert into unix_data values(%d,%d,'%s')",DB_INDEX++,atoi(data[0]),data[1]);
+		// 넘어가는 데이터는 Index/흑돌,백돌 ID/ 승리한 ID/ 게임 수행 시간/이다.
+		snprintf(query,64,"insert into omok_data values(%d,'%s','%s','%s','%d')",DB_INDEX++,"test","test1","test",1234);
 		
 		// printf 구문은 확인을 위한 부분이라고 보면 됩니다.
 		printf("-----------------------------------------\n");

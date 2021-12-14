@@ -1,18 +1,3 @@
-// mysql을 사용하기 위해서 MySQL_c api가 필요합니다. 아래 명령어로 설치 가능합니다.
-// sudo apt-get install libmysqlclient-dev
-
-// 컴파일 명령어는 아래와 같습니다. mysql을 활용하기 위해서 해당 문구를 입력해야하니 확인 부탁드립니다.
-// gcc unix_omok_server.c -o unix_omok_server -lmysqlclient -L/usr/lib64/mysql 
-
-// 할일 :  
-
-// client에서 sever와 소켓 통신으로 승부 결과 및 ID보내기
-// mysql table 구성 및 서버 열기
-// table 구성에 맞춰 server 수정하
-// spring활용 webpage 및 server 구현
-// 
-#include "/usr/include/mysql/mysql.h" 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -32,14 +17,6 @@ void my_send(int sock, char* msg){
 		exit(0);
 	}
 }
-
-//mysql error 발생시 동작하는 logic
-void finish_with_error(MYSQL *conn){
-	fprintf(stderr,"%s\n",mysql_error(conn));
-	mysql_close(conn);
-	exit(1);
-}
-
 void my_recv(int sock, char * buf,int *member_num)
 {
 	int n;
@@ -95,46 +72,20 @@ int main()
 	int msglen, n;
 	int member_num =0;
 	int member_sd[CLIENTNUM];
-
-	int DB_INDEX=1; // database의 pk(index 값)
-	char* Complete="Complete",*Failed="Failed";
-	int i=0;
-
-	printf("---------------------------------------------------\n\n");
-
-	printf("      	유닉스 2021학년도 2학기 프로젝트2 과제      \n");
-	printf("	socket network를 활용한 실시간 오목게임 서버 입니다.\n\n");
-
-	printf("---------------------------------------------------\n");
-
-
-	MYSQL *conn = mysql_init(NULL);
-		
-	if(conn==NULL) {
-		fprintf(stderr,"%s\n",mysql_error(conn));
-		exit(1);
-	}
 	
-
-
-	/*
-
-	
-		// 제출시에는, mysql서버로 변경해서 제출할 것!! 
-	
-
-	*/
-	if(mysql_real_connect(conn,"localhost","root","rootroot",NULL,0,NULL,0)==NULL) {
-		finish_with_error(conn);
-	}
-
-
-
-
-
 	int once = 1;
 	connect_request(&sockfd, &my_addr);
 	
+
+
+	printf("		---------------------------------------------------\n\n");
+
+	printf("    			유닉스 2021학년도 2학기 프로젝트2 과제\n");
+	printf("		socket network를 활용한 실시간 오목게임 서버 입니다.\n\n");
+
+	printf("		---------------------------------------------------\n");
+
+
 	
 	while(1){
 		FD_ZERO(&read_fds);	// read_fds를 0으로 초기화
@@ -206,44 +157,6 @@ int main()
 			}
 		}
 	}
-
-
-	/*
-
-
-	쿼리 날리기전에, 필요한 데이터 소켓으로 받아오는 로직 추가
-
-
-	*/
-	// 입력받은 ID(Pk)(DB)INDEX, 닉네임 (흑/백), 승리한 사람(흑,백), play time 
-
-	snprintf(query,64,"insert into unix_omok values(%d,%d,'%s')", DB_INDEX++, atoi(data[0]),data[1]);
-		
-	// 쿼리문 확인
-	printf("-----------------------------------------\n");
-	printf("%s\n",query);
-
-	//sql_query는 정상일 경우 0 아닐 경우엔 !=0
-	if(mysql_query(conn,query)) {
-		i=0;
-		memset(query,0,sizeof(query));
-		send(clnt_sock,Failed,sizeof(Failed)+1,0);
-		printf("Index Number : %d is Failed\n",DB_INDEX-1);
-		DB_INDEX--;
-		printf("-----------------------------------------\n");
-		continue;
-	}
-
-	else {
-		i=0;
-		send(clnt_sock,Complete,sizeof(Complete)+1,0);
-		printf("Index Number : %d is Complete\n",DB_INDEX-1);
-		printf("-----------------------------------------\n");
-		memset(query,0,sizeof(query));
-	}
-
-	mysql_close(conn);
-
 	printf("서버를 종료합니다.\n");
 	return 0;
 }
