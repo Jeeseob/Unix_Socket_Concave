@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>unix 오목</title>
+</head>
+<body>
+
+<div class="container">
+    <div>
+        <table>
+            <thead>
+            <tr>
+                <th>흑 ID</th>
+                <th>백 ID</th>
+                <th>승자</th>
+                <th>플레이 시간</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <!-- templete에서 아래 로직을 실행해줌.
+            객체를 받아와서 member에 넣음. -->
+            <tr th:each="omokData : ${omokDatas}">
+                <!--getter, setter로 가져옴.-->
+                <td th:text="${omokData.idBlack}"></td>
+                <td th:text="${omokData.idWhite}"></td>
+                <td th:text="${omokData.winner}"></td>
+                <td th:text="${omokData.playTime}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>
