@@ -235,10 +235,10 @@ int main()
 
 	MYSQL *conn = mysql_init(NULL);
 		
-	if(conn==NULL) {
-		fprintf(stderr,"%s\n",mysql_error(conn));
-		exit(1);
-	}
+	// if(conn==NULL) {
+	// 	fprintf(stderr,"%s\n",mysql_error(conn));
+	// 	exit(1);
+	// }
 
 	/*
 
