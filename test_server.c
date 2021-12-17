@@ -409,10 +409,10 @@ int main()
 		}
 	}
 
-	my_recv(member_sd[0],time)
+	my_recv(member_sd[0],time);
 
 
-	sprintf(query,64,"insert into omok_data('id_black','id_white','winner','play_time') values('%s','%s','%s','%s')",idBlack,idWhite,winner,time);
+	sprintf(query,"insert into omok_data('id_black','id_white','winner','play_time') values('%s','%s','%s','%s')",idBlack,idWhite,winner,time);
 		
 	// printf 구문은 확인을 위한 부분이라고 보면 됩니다.
 	printf("-----------------------------------------\n");
