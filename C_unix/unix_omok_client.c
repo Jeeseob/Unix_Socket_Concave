@@ -38,7 +38,7 @@ int sockfd;
 
 // 오목판을 출력하는 함수
 void print_board(int board[][14]){
-	// 판을 그리기 전에, 터미널의 내용을 모두 지운다.
+	// 판을 그리기 전에, 터미널의 내용을 모두 지운다.ㅋ
 	system("clear");
 	// 모양대로 그리기
 	printf("| A │ B │ C │ D │ E │ F │ G │ H │ I │ J │ K │ L │ M │ N │\n");
@@ -292,7 +292,7 @@ void * counting(void * arg){
 	}
 	printf("총 대국 시간 : %d초\n",timer);
 	
-	if(player = 1) {
+	if(player == 1) {
 		sprintf(time,"%d",timer);
 		my_send(sockfd, time);
 		}	
