@@ -25,61 +25,14 @@ struct opt {		// 옵션을 담을 구조체 정의 및 선언
 }opt;
 
 int start = 0;				// 타이머 구현을 위한 전역변수
-
-
-// 오목의 룰에 해당하는 함수. 승리여부를 지속적으로 확인
-int Win_Check(int Board[][14]) {
-   int i;                                          
-   int j;
-   for (i = 2; i < 18; i++) {                     // 가로 또는 세로를 검사하기 위한 반복문
-      for (j = 0; j < 20; j++) {                  
-         if (Board[j][i - 2] == 1 && Board[j][i - 1] == 1 && Board[j][i] == 1 && Board[j][i + 1] == 1 && Board[j][i + 2] == 1) {   // 가로방향
-            printf("*** 흑돌 승리 ***\n");
-            return 1;
-         }
-         else if (Board[j][i - 2] == 2 && Board[j][i - 1] == 2 && Board[j][i] == 2 && Board[j][i + 1] == 2 && Board[j][i + 2] == 2) {
-            printf("*** 백돌 승리 ***\n");
-            return 1;
-         }
-
-         else if (Board[i - 2][j] == 1 && Board[i - 1][j] == 1 && Board[i][j] == 1 && Board[i + 1][j] == 1 && Board[i + 2][j] == 1) {   // 세로방향
-            printf("*** 흑돌 승리 ***\n");
-            return 1;
-         }
-         else if (Board[i - 2][j] == 2 && Board[i - 1][j] == 2 && Board[i][j] == 2 && Board[i + 1][j] == 2 && Board[i + 2][j] == 2) {
-            printf("*** 백돌 승리 ***\n");
-            return 1;
-         }
-      }
-   }
-
-   for (i = 2; i < 18; i++) {                  // 대각선
-      for (j = 2; j < 18; j++) {               
-         if (Board[j - 2][i - 2] == 1 && Board[j - 1][i - 1] == 1 && Board[j][i] == 1 && Board[j + 1][i + 1] == 1 && Board[j + 2][i + 2] == 1) { //왼쪽 위에서 오른쪽 밑으로 내려가는 대각선
-            return 1;
-         }
-         else if (Board[j - 2][i - 2] == 2 && Board[j - 1][i - 1] == 2 && Board[j][i] == 2 && Board[j + 1][i + 1] == 2 && Board[j + 2][i + 2] == 2) {
-            printf("*** 백돌 승리 ***\n");
-            return 1;
-         }
-
-         else if (Board[j + 2][i - 2] == 1 && Board[j + 1][i - 1] == 1 && Board[j][i] == 1 && Board[j - 1][i + 1] == 1 && Board[j - 2][i + 2] == 1) { // 왼쪽 아래에서 오른쪽 위로 올라가는 대각선
-            printf("*** 흑돌 승리 ***\n");
-            return 1;
-         }
-         else if (Board[j + 2][i - 2] == 2 && Board[j + 1][i - 1] == 2 && Board[j][i] == 2 && Board[j - 1][i + 1] == 2 && Board[j - 2][i + 2] == 2) {
-            printf("*** 백돌 승리 ***\n");
-            return 1;
-         }
-      }
-   } //조건이 갖춰지면 1, 아니면 0.
-   return 0;
-}
+int player = 0; 			// 옵션의 구현을 위한 변수 c와 로그인여부를 확인하는 sign변수를 선언한다.
+int sockfd;
+int timer = 0;
 
 
 // 오목판을 출력하는 함수이
 void print_board(int board[][14]){
-
+	system("clear");
 	printf("| A │ B │ C │ D │ E │ F │ G │ H │ I │ J │ K │ L │ M │ N │\n");
 	printf("┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐───\n");
 
@@ -93,7 +46,7 @@ void print_board(int board[][14]){
             printf("│ ○ ");
          }
          else {
-				printf("│   ",0); // bord[i][j]
+				printf("│   "); // bord[i][j]
 			}
 		}
 		printf("│ %d\n",i+1);
@@ -112,7 +65,6 @@ void print_board(int board[][14]){
 */
 void put_board(char * buf, int board[][14], int *i,int *j){
 	char temp[BUFSIZ];
-	char* ptr;
 	char *temp_ptr;
 	int n,m;
 	
@@ -122,14 +74,14 @@ void put_board(char * buf, int board[][14], int *i,int *j){
 			if(!strcmp(temp, "quit")){				// 문자열이 quit이라면 종료한다.
 				return;
 			}
-			printf("','를 이용해 입력해 주세요.\n");
+			printf("','를 이용해 띄어쓰기 없이 입력해 주세요.\n");
 			scanf("%s", buf);
 			continue;
 		}
 
 		// 앞에 값은 A~N 까지 1byte이기 때문에, m은 1byte n은 이후 나머지 byte 를 사용하는 형식으로 만들 었다. 
-		m = ptr[0] - 65;
-		n = (int)strtol(ptr+2, &temp_ptr, 10);
+		m = buf[0] - 65;
+		n = (int)strtol(buf+2, &temp_ptr, 10);
 		
 		
 		n--;	// 배열은 0~13의 값을 사용하기 때문에 하나씩 값을 빼준다.
@@ -203,6 +155,13 @@ int my_recv(int sock, char *buf){
 		printf("상대방이 기권하였습니다.\n");
 		return 1 ;
 	}
+	else if(!strcmp(buf, "winner")){				
+		return 1;
+	}
+	else if(!strcmp(buf, "looser")){				
+		return 1;
+	}
+
 	return 0;
 }
 
@@ -233,7 +192,7 @@ void * omok(void* sd){
 	char buf[BUFSIZ], name[BUFSIZ], pwd[BUFSIZ];
 	int board[14][14];								// 오목판 배열 선언
 	int count = 0, j = 0, i = 0;					// count : 흑돌 백돌을 정하기 위한 변수
-	int player = 0; 								// 옵션의 구현을 위한 변수 c와 로그인여부를 확인하는 sign변수를 선언한다.
+
 	
 	//바둑판 초기화
 	for (i = 0; i < 14; i++) {
@@ -242,15 +201,7 @@ void * omok(void* sd){
 		}
 	}
 	system("clear");
-	printf("		---------------------------------------------------\n\n");
 
-	printf("    			유닉스 2021학년도 2학기 프로젝트2 과제\n");
-	printf("		socket network를 활용한 실시간 오목게임 클라이언트 입니다.\n\n");
-
-	printf("		---------------------------------------------------\n");
-
-
-	
 	my_recv(sockfd, buf);						// client 0 : 상대방을 기다리는 중입니다. | client 1 : 대국을 시작합니다.
 	printf("%s",buf);
 	if(strcmp(buf,"상대방을 기다려주세요.\n")){ // client 1 인 경우 
@@ -263,6 +214,7 @@ void * omok(void* sd){
 		start = 2;								// timer쓰레드를 종료시키기 위해 start 변수를 2로 설정해 준다.
 		return 0;
 	}	
+	
 	print_board(board);
 	start = 1;
 	if(player){									// client 1인경우 상대방의 메세지를 받기 때문에
@@ -275,9 +227,6 @@ void * omok(void* sd){
 	
 	while(1){
 		print_board(board);
-		if (Win_Check(board)) {					// 승리조건을 체크한다.;
-        	break;								// 승리시 while문 탈출
-    	}
 		
 		printf("사용자의 차례입니다.\n");	
 		printf("종료를 원하시면 quit을 적어주세요\n");
@@ -296,10 +245,7 @@ void * omok(void* sd){
 		if(!strcmp(buf, "quit")){				// 보낸 내용이 quit이라면 서버에 quit 메세지를 보내고 종료한다.
 			printf("기권하였습니다.\n");
 			break ;
-		}
-		if (Win_Check(board)) {					// send()보다 먼저 win_check()시
-    		break;								// socket을 닫아버리는데 다른 client가 recv()기다리기때문에
-    	}										// seg fault발생한다. 따라서 send() 뒤에서 체크한다. 
+		}									// seg fault발생한다. 따라서 send() 뒤에서 체크한다. 
 		
 		if(my_recv(sockfd, buf)){
 			break;
@@ -308,7 +254,10 @@ void * omok(void* sd){
 		set_board(board, count, i, j);
 		count++;
 	}
-	start = 2;									// omok()쓰레드 종료 전 timer쓰레드를 종료시키기 위해 start 변수를 2로 설정해 준다.
+
+
+	sleep(1);
+
 	return 0;
 }
 
@@ -316,7 +265,8 @@ void * omok(void* sd){
 타이머를 구현한 쓰레드
 */
 void * counting(void * arg){
-	int timer = 0;
+	char time[BUFSIZ];
+
 	while(1){
 		if(start == 1){
 			timer++;
@@ -330,27 +280,47 @@ void * counting(void * arg){
 	return 0;
 }
 
+
 int main(int argc, char *argv[])
 {
-	int sockfd;
+	
 	struct sockaddr_in server_addr;
 	pthread_t omok_thread, counting_thread;
 	int thread_result;
-	char buf[BUFSIZ], name[BUFSIZ], pwd[BUFSIZ];
+	char buf[BUFSIZ], id[BUFSIZ];
 	int i = 0;
 	int c = 0;
 
 	extern char* optarg;
 	extern int optind;
 
+	printf("		---------------------------------------------------\n\n");
+
+	printf("    			유닉스 2021학년도 2학기 프로젝트2 과제\n");
+	printf("		socket network를 활용한 실시간 오목게임 클라이언트 입니다.\n\n");
+
+	printf("		---------------------------------------------------\n");
+
+
+	printf("id는 이후 web에서 승패를 확인하는 용도로만 사용됩니다.\n");
+	printf("id 를 입력해 주세요 : ");
+	scanf("%s",id);
+
 	
 	connect_request(&sockfd, &server_addr);
 
+	my_send(sockfd, id);
+
+
 	pthread_create(&omok_thread, NULL, omok, (void *)(intptr_t)sockfd);
 	pthread_create(&counting_thread, NULL, counting, NULL);
-	
+
 	pthread_join(omok_thread, (void **)&thread_result);
 	pthread_join(counting_thread, (void **)&thread_result);
+
+
+
+
 
 	printf("client-quited\n");
 	close(sockfd);

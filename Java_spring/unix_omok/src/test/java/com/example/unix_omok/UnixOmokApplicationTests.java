@@ -1,4 +1,4 @@
-package com.omok.unix_omok;
+package com.example.unix_omok;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

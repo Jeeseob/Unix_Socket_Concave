@@ -1,4 +1,4 @@
-package com.omok.unix_omok.model;
+package com.example.unix_omok;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -7,13 +7,13 @@ import javax.persistence.Id;
 
 @Entity
 public class OmokData {
-
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String idBlack;
     private String idWhite;
     private String winner;
-    private int playTime;
+    private Long playTime;
 
     public Long getId() {
         return id;
@@ -47,12 +47,11 @@ public class OmokData {
         this.winner = winner;
     }
 
-    public int getPlayTime() {
+    public Long getPlayTime() {
         return playTime;
     }
 
-    public void setPlayTime(int playTime) {
+    public void setPlayTime(Long playTime) {
         this.playTime = playTime;
     }
 }
-

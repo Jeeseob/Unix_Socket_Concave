@@ -1,9 +1,7 @@
-package com.omok.unix_omok.controller;
+package com.example.unix_omok.controller;
 
-
-import com.omok.unix_omok.Service.OmokDataService;
-import com.omok.unix_omok.model.OmokData;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.unix_omok.OmokData;
+import com.example.unix_omok.Service.OmokDataService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,19 +16,11 @@ public class OmokController {
         this.omokDataService = omokDataService;
     }
 
-    @Autowired
-
     @GetMapping("/")
     public String home(Model model) {
-        System.out.println("test2");
         List<OmokData> omokDataList = omokDataService.findList();
-        model.addAttribute("omokDatas", omokDataList); //model을 통째로 넘긴다.
-        System.out.println("test");
+        model.addAttribute("omokDataList",omokDataList);
         return "home";
     }
 
-    @GetMapping("/test")
-    public String test() {
-        return "test";
-    }
 }

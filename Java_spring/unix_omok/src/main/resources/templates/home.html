@@ -1,7 +1,18 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>unix 오목</title>
+    <title>오목 경기결과</title>
+    <meta charset="UTF-8">
+
+    <style>
+        table {border-collapse: collapse}
+        table *{border: 1px solid black; text-align: center;}
+        p {
+            line-height: 100%;
+            margin: 0px 0px 0px 0px;
+        }
+    </style>
+
 </head>
 <body>
 
@@ -10,27 +21,27 @@
         <table>
             <thead>
             <tr>
-                <th>흑 ID</th>
-                <th>백 ID</th>
-                <th>승자</th>
+                <th>흑 Id</th>
+                <th>백 Id</th>
+                <th>승자 Id</th>
                 <th>플레이 시간</th>
             </tr>
             </thead>
 
             <tbody>
-            <!-- templete에서 아래 로직을 실행해줌.
-            객체를 받아와서 member에 넣음. -->
-            <tr th:each="omokData : ${omokDatas}">
-                <!--getter, setter로 가져옴.-->
+
+            <tr th:each="omokData : ${omokDataList}">
+
                 <td th:text="${omokData.idBlack}"></td>
                 <td th:text="${omokData.idWhite}"></td>
                 <td th:text="${omokData.winner}"></td>
-                <td th:text="${omokData.playTime}"></td>
+                <td th:text="${omokData.playTime}+'초'"></td>
             </tr>
             </tbody>
         </table>
     </div>
 </div>
+
 
 </body>
 </html>

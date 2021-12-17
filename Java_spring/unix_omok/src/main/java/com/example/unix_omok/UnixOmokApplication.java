@@ -1,4 +1,4 @@
-package com.omok.unix_omok;
+package com.example.unix_omok;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

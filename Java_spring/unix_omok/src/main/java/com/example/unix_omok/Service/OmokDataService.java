@@ -1,15 +1,12 @@
-package com.omok.unix_omok.Service;
+package com.example.unix_omok.Service;
 
-import com.omok.unix_omok.model.OmokData;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.example.unix_omok.OmokData;
+import com.example.unix_omok.repository.OmokDataRepository;
 import org.springframework.transaction.annotation.Transactional;
-import com.omok.unix_omok.repository.OmokDataRepository;
 
 import java.util.List;
 
 @Transactional
-@Service
 public class OmokDataService {
 
     private final OmokDataRepository omokDataRepository;
