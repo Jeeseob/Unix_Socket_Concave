@@ -389,7 +389,7 @@ int main()
 					if(!strcmp(buf, "quit")) {
 						strcpy(winner,idBlack);
 						start = 2;
-						my_send(member_sd[0], buf);	
+						// my_send(member_sd[0], buf);	
 						game = 0;
 						break;
 					}
