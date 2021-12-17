@@ -47,11 +47,11 @@ void print_board(int board[][14]){
 	for(int i = 0; i< 14; i++) {
 		for(int j = 0; j<14; j++) {
 			if (board[i][j] % 3 == BLACK) {
-            printf("│ ● "); //흑독
+            printf("│ ●"); //흑독
          }
 
          else if (board[i][j] % 3 == WHITE) {
-            printf("│ ○ "); //백돌
+            printf("│ ○"); //백돌
          }
          else {
 				printf("│   "); // bord[i][j]
@@ -232,9 +232,8 @@ void * omok(void* sd){
 		start = 2;								
 		return 0;
 	}	
-	
-	print_board(board);
 	start = 1;
+	print_board(board);
 	if(player){		
 		// 입력받은 값을 기반으로 연산						
 		// put_board() 와 set_board()를 해준다.
@@ -273,6 +272,7 @@ void * omok(void* sd){
 		// }									
 		
 		if(my_recv(sockfd, buf)){
+			start = 2;
 			break;
 		}
 		put_board(buf, board,&i, &j);
