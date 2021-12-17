@@ -412,7 +412,16 @@ int main()
 	my_recv(member_sd[0],time);
 
 
-	sprintf(query,"insert into omok_data('id_black','id_white','winner','play_time') values('%s','%s','%s','%s')",idBlack,idWhite,winner,time);
+	strcpy(query,"insert into omok_data('id_black','id_white','winner','play_time') values('");
+	strcat(query,idBlack);
+	strcat(query,"','");
+	strcat(query,idWhite);
+	strcat(query,"','");
+	strcat(query,winner);
+	strcat(query,"','");
+	strcat(query,time);
+	strcat(query,"')");
+	//sprintf(query,"insert into omok_data('id_black','id_white','winner','play_time') values('%s','%s','%s','%s')",idBlack,idWhite,winner,time);
 		
 	// printf 구문은 확인을 위한 부분이라고 보면 됩니다.
 	printf("-----------------------------------------\n");
