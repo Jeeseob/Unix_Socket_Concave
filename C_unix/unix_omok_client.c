@@ -261,15 +261,18 @@ void * omok(void* sd){
 		count++;
 		
 		print_board(board);
+
+		// 보낸 내용이 quit이라면 서버에 quit 메세지를 보내고 종료한다.	
+		if(!strcmp(buf, "quit")){				
+			printf("기권하셨습니다.\n");
+			my_send(sockfd, buf);
+			break ;
+		}	
 		
 		printf("상대방의 차례입니다.\n");	
 		my_send(sockfd, buf);
 
-		// // 보낸 내용이 quit이라면 서버에 quit 메세지를 보내고 종료한다.	
-		// if(!strcmp(buf, "quit")){				
-		// 	printf("상대방이 기권하였습니다.\n");
-		// 	break ;
-		// }									
+										
 		
 		if(my_recv(sockfd, buf)){
 			start = 2;
