@@ -265,7 +265,7 @@ void * omok(void* sd){
 		// 보낸 내용이 quit이라면 서버에 quit 메세지를 보내고 종료한다.	
 		if(!strcmp(buf, "quit")){				
 			printf("기권하셨습니다.\n");
-			star = 2;
+			start = 2;
 			my_send(sockfd, buf);
 			break ;
 		}	
@@ -349,7 +349,7 @@ int main(int argc, char *argv[])
 	pthread_join(omok_thread, (void **)&thread_result);
 	pthread_join(counting_thread, (void **)&thread_result);
 
-	sprintf(timer,"%d",time);
+	sprintf(time,"%d",timer);
 	my_send(sockfd, time);
 
 	sleep(2);

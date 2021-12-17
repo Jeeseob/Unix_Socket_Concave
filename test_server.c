@@ -276,7 +276,7 @@ int main()
 	printf("		---------------------------------------------------\n");
 
 
-	//test
+
 	while(game){
 		FD_ZERO(&read_fds);
 
