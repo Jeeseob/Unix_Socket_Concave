@@ -8,6 +8,7 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <pthread.h>
+#include "/usr/include/mysql/mysql.h" 
 
 #define PORTNUM 9000
 #define CLIENTNUM 2 
