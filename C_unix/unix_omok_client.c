@@ -320,7 +320,7 @@ int main(int argc, char *argv[])
 	struct sockaddr_in server_addr;
 	pthread_t omok_thread, counting_thread;
 	int thread_result;
-	char buf[BUFSIZ], id[BUFSIZ]. time[BUFSIZ];;
+	char buf[BUFSIZ], id[BUFSIZ], time[BUFSIZ];
 	int i = 0;
 	int c = 0;
 
@@ -349,7 +349,7 @@ int main(int argc, char *argv[])
 	pthread_join(omok_thread, (void **)&thread_result);
 	pthread_join(counting_thread, (void **)&thread_result);
 
-	sprintf(time,"%d",timer);
+	sprintf(timer,"%d",time);
 	my_send(sockfd, time);
 
 	sleep(2);
