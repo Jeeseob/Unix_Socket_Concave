@@ -77,8 +77,15 @@ void put_board(char * buf, int board[][14], int *i,int *j){
 	while(1){
 		// strtok() 함수는 원래의 문자열을 수정하기 때문에 temp변수에 복사해준다.
 		strcpy(temp, buf);		
-		// 문자열이 'ㅇ,ㅇ'로 이루어지지 않았다면 다시 입력을 받는다.					
-		if(!(temp[1] == ',')){	
+		// 문자열이 'ㅇ,ㅇ'로 이루어지지 않았다면 다시 입력을 받는다.		
+
+		// 보낸 내용이 quit이라면 서버에 quit 메세지를 보내고 종료한다.	
+		if(!strcmp(temp, "quit")){				
+			printf("기권하였습니다.\n");
+			break ;
+		}
+
+		else if(!(temp[1] == ',')){	
 			printf("','를 이용해 띄어쓰기 없이 입력해 주세요.\n");
 			scanf("%s", buf);
 			continue;
@@ -154,6 +161,7 @@ int my_recv(int sock, char *buf){
 		exit(1);
 	}
 	buf[n] = '\0';
+
 	if(!strcmp(buf, "quit")){
 		printf("상대방이 기권하였습니다.\n");
 		return 1 ;
@@ -256,11 +264,11 @@ void * omok(void* sd){
 		printf("상대방의 차례입니다.\n");	
 		my_send(sockfd, buf);
 
-		// 보낸 내용이 quit이라면 서버에 quit 메세지를 보내고 종료한다.	
-		if(!strcmp(buf, "quit")){				
-			printf("기권하였습니다.\n");
-			break ;
-		}									
+		// // 보낸 내용이 quit이라면 서버에 quit 메세지를 보내고 종료한다.	
+		// if(!strcmp(buf, "quit")){				
+		// 	printf("상대방이 기권하였습니다.\n");
+		// 	break ;
+		// }									
 		
 		if(my_recv(sockfd, buf)){
 			break;
