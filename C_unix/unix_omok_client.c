@@ -47,11 +47,11 @@ void print_board(int board[][14]){
 	for(int i = 0; i< 14; i++) {
 		for(int j = 0; j<14; j++) {
 			if (board[i][j] % 3 == BLACK) {
-            printf("│ ● ");
+            printf("│ ● "); //흑독
          }
 
          else if (board[i][j] % 3 == WHITE) {
-            printf("│ ○ ");
+            printf("│ ○ "); //백돌
          }
          else {
 				printf("│   "); // bord[i][j]
@@ -166,10 +166,12 @@ int my_recv(int sock, char *buf){
 		printf("상대방이 기권하였습니다.\n");
 		return 1 ;
 	}
-	else if(!strcmp(buf, "winner")){				
+	else if(!strcmp(buf, "winner")){		
+		printf("승리하셨습니다.\n");		
 		return 1;
 	}
 	else if(!strcmp(buf, "looser")){				
+		printf("패배하셨습니다.\n");	
 		return 1;
 	}
 

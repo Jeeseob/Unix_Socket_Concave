@@ -419,7 +419,7 @@ int main()
 	my_recv(member_sd[0],time);
 
 
-	strcpy(query,"insert into omok_data('id_black','id_white','winner','play_time') values('");
+	strcpy(query,"insert into omok_data(id_black,id_white,winner,play_time) values('");
 	strcat(query,idBlack);
 	strcat(query,"','");
 	strcat(query,idWhite);
