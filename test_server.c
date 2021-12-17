@@ -244,7 +244,7 @@ int main()
 	
 
 	*/
-	if(mysql_real_connect(conn,"localhost","root","1234","unix_omok",0,NULL,0)==NULL) {
+	if(mysql_real_connect(conn,"localhost","root","rootroot","unix_omok",0,NULL,0)==NULL) {
 		finish_with_error(conn);
 	}
 
