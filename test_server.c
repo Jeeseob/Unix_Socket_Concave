@@ -8,7 +8,7 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <pthread.h>
-#include "/usr/include/mysql/mysql.h" 
+#include "/usr/include/mysql/mysql.h"  
 
 #define PORTNUM 9000
 #define CLIENTNUM 2 
@@ -212,7 +212,7 @@ int main()
 	int nfds, i; // nfds : 소켓개수 + 1
 	struct sockaddr_in my_addr, client_addr;
 	int sockfd= 0, clisd, clilen = sizeof(client_addr);
-	char wait_msg[BUFSIZ], buf[BUFSIZ], idBlack[BUFSIZ], idWhite[BUFSIZ], winner[BUFSIZ];
+	char wait_msg[BUFSIZ], buf[BUFSIZ], idBlack[BUFSIZ], idWhite[BUFSIZ], winner[BUFSIZ], query[BUFSIZ];
 	int msglen, n;
 	int member_num =0;
 	int member_sd[CLIENTNUM];
@@ -402,7 +402,7 @@ int main()
 	}
 
 
-	snprintf(query,64,"insert into omok_data('id_black','id_white','winner','play_time') values('%s','%s','%s','%d')",idBlack,idWhite,winner,timer);
+	snprintf(query,64,"insert into omok_data('id_black','id_white','winner','play_time') values('%s','%s','%s','%d')",idBlack,idWhite,winner,1234);
 		
 	// printf 구문은 확인을 위한 부분이라고 보면 됩니다.
 	printf("-----------------------------------------\n");
@@ -425,7 +425,7 @@ int main()
 
 	printf("%s\t",winner);
 
-	printf("%d",timer);
+	printf("%d",1234);
 
 
 
