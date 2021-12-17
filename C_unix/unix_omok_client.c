@@ -1,3 +1,7 @@
+// 타이머를 구현하기 위해 pthread를 활용해서 개발하였습니다.
+// 컴파일 후 실행시 아래 명령어로 실행 부탁드립니다.
+// ./unix_omok_client -pthread 
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -87,6 +91,7 @@ void put_board(char * buf, int board[][14], int *i,int *j){
 
 		else if(!(temp[1] == ',')){	
 			printf("','를 이용해 띄어쓰기 없이 입력해 주세요.\n");
+			printf("입력 [ex) H,8] : ");
 			scanf("%s", buf);
 			continue;
 		}
@@ -102,12 +107,14 @@ void put_board(char * buf, int board[][14], int *i,int *j){
 		if(n < 0 || n > 14){
 			printf("입력한 값이 가능한 범위를 초과하였습니다.\n");
     		printf("알맞은 범위 내에서 착수하여 주세요. 열: A~N   행: 1~14\n");
+    		printf("입력 [ex) H,8] : ");
     		scanf("%s", buf);
 			continue;
 		}
 		if(m < 0 || m > 14){
 			printf("입력한 값이 가능한 범위를 초과하였습니다.\n");
     		printf("알맞은 범위 내에서 착수하여 주세요. 열: A~N   행: 1~14\n");
+    		printf("입력 [ex) H,8] : ");
     		scanf("%s", buf);
 			continue;
 		}
@@ -115,6 +122,7 @@ void put_board(char * buf, int board[][14], int *i,int *j){
 		if(board[n][m] != NONE){					
 			printf("돌이 이미 존재합니다. 다른 곳에 놓아주세요.\n");
     		printf("알맞은 위치 착수하여 주세요. 열: A~N   행: 1~14\n");
+    		printf("입력 [ex) H,8] : ");
     		scanf("%s", buf);
 			continue;
 		}
@@ -164,6 +172,7 @@ int my_recv(int sock, char *buf){
 
 	if(!strcmp(buf, "quit")){
 		printf("상대방이 기권하였습니다.\n");
+		printf("승리하셨습니다.\n");
 		return 1 ;
 	}
 	else if(!strcmp(buf, "winner")){		
@@ -198,6 +207,7 @@ void connect_request(int *sockfd, struct sockaddr_in *server_addr)
 	}
 }
 
+// 실제 오목을 실행하는 함수, thread로 실행
 void * omok(void* sd){
 	int sockfd = (intptr_t)sd;
 	char buf[BUFSIZ], name[BUFSIZ], pwd[BUFSIZ];
@@ -265,6 +275,7 @@ void * omok(void* sd){
 		// 보낸 내용이 quit이라면 서버에 quit 메세지를 보내고 종료한다.	
 		if(!strcmp(buf, "quit")){				
 			printf("기권하셨습니다.\n");
+			printf("패배하셨습니다.\n");	
 			start = 2;
 			my_send(sockfd, buf);
 			break ;
@@ -306,10 +317,6 @@ void * counting(void * arg){
 	}
 	printf("총 대국 시간 : %d초\n",timer);
 	
-	// if(player == 1) {
-	// 	sprintf(time,"%d",timer);
-	// 	my_send(sockfd, time);
-	// 	}	
 	return 0;
 }
 
@@ -330,7 +337,7 @@ int main(int argc, char *argv[])
 	printf("    			유닉스 2021학년도 2학기 프로젝트2 과제\n");
 	printf("		socket network를 활용한 실시간 오목게임 클라이언트 입니다.\n\n");
 
-	printf("		---------------------------------------------------\n");
+	printf("		---------------------------------------------------\n\n\n");
 
 
 	printf("id는 이후 web에서 승패를 확인하는 용도로만 사용됩니다.\n");
@@ -342,16 +349,19 @@ int main(int argc, char *argv[])
 
 	my_send(sockfd, id);
 
-
+	// thread를 만들어서 timer와 omok 로직을 분리실행 시킵니다.
 	pthread_create(&omok_thread, NULL, omok, (void *)(intptr_t)sockfd);
 	pthread_create(&counting_thread, NULL, counting, NULL);
 
 	pthread_join(omok_thread, (void **)&thread_result);
 	pthread_join(counting_thread, (void **)&thread_result);
 
-	sprintf(time,"%d",timer);
-	my_send(sockfd, time);
-
+	// 모두 종료된 후 타이머로 계산된 시간 전송
+	if(player == 1) {
+		sprintf(time,"%d",timer);
+		my_send(sockfd, time);
+	}
+	// 잠시 대기 후 종료
 	sleep(2);
 
 
