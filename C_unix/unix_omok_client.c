@@ -265,6 +265,7 @@ void * omok(void* sd){
 		// 보낸 내용이 quit이라면 서버에 quit 메세지를 보내고 종료한다.	
 		if(!strcmp(buf, "quit")){				
 			printf("기권하셨습니다.\n");
+			star = 2;
 			my_send(sockfd, buf);
 			break ;
 		}	
@@ -292,7 +293,7 @@ void * omok(void* sd){
 
 // 타이머를 쓰레드를 활용하여 구현,
 void * counting(void * arg){
-	char time[BUFSIZ];
+	
 
 	while(1){
 		if(start == 1){
@@ -305,10 +306,10 @@ void * counting(void * arg){
 	}
 	printf("총 대국 시간 : %d초\n",timer);
 	
-	if(player == 1) {
-		sprintf(time,"%d",timer);
-		my_send(sockfd, time);
-		}	
+	// if(player == 1) {
+	// 	sprintf(time,"%d",timer);
+	// 	my_send(sockfd, time);
+	// 	}	
 	return 0;
 }
 
@@ -319,7 +320,7 @@ int main(int argc, char *argv[])
 	struct sockaddr_in server_addr;
 	pthread_t omok_thread, counting_thread;
 	int thread_result;
-	char buf[BUFSIZ], id[BUFSIZ];
+	char buf[BUFSIZ], id[BUFSIZ]. time[BUFSIZ];;
 	int i = 0;
 	int c = 0;
 
@@ -347,6 +348,9 @@ int main(int argc, char *argv[])
 
 	pthread_join(omok_thread, (void **)&thread_result);
 	pthread_join(counting_thread, (void **)&thread_result);
+
+	sprintf(time,"%d",timer);
+	my_send(sockfd, time);
 
 	sleep(2);
 
