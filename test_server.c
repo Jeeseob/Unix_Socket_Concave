@@ -230,10 +230,17 @@ int main()
 	int once = 1;
 	count = 0;
 
+	MYSQL mysql_handle;
+	mysql_init(&mysql_handle);
 
 
+	 if (!mysql_real_connect(&mysql_handle, "localhost", "root", "1234", "unix_omok", 3306, (char *)NULL, 0))
+	    {
+	        finish_with_error(&mysql_handle);
+	        exit(1);
+	    }
 
-	MYSQL *conn = mysql_init(NULL);
+	//MYSQL *conn = mysql_init(NULL);
 		
 	// if(conn==NULL) {
 	// 	fprintf(stderr,"%s\n",mysql_error(conn));
@@ -248,9 +255,9 @@ int main()
 
 	*/
 
-	if(mysql_real_connect(conn,"localhost","root","1234","unix_omok",3306,NULL,0)==NULL) {
-		finish_with_error(conn);
-	}
+	// if(mysql_real_connect(conn,"localhost","root","1234","unix_omok",3306,NULL,0)==NULL) {
+	// 	finish_with_error(conn);
+	// }
 
 
 
