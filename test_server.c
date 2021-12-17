@@ -435,11 +435,15 @@ int main()
 	printf("%s ",query);
 
 	//sql_query는 정상일 경우 0 아닐 경우엔 !=0
-	if(mysql_query(conn,query)) {
+	// if(mysql_query(conn,query)) {
+	// 	printf("is Failed\n");
+	// 	printf("-----------------------------------------\n");
+	// }
+
+	if(mysql_query(&mysql_handle,query)) {
 		printf("is Failed\n");
 		printf("-----------------------------------------\n");
 	}
-
 	else {
 		printf("is Complete\n");
 		printf("-----------------------------------------\n");
