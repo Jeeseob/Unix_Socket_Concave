@@ -12,27 +12,35 @@
 
 #define PORTNUM 9000
 
-#define CLIENTNUM 3 // 클라이언트가 1명일 때 소켓기술자의 값은 3
-#define USERNUM 2	// user구조체 배열의 갯수
-#define NONE 0		// NONE, BLACK, WHITE 바둑판의 값들을 설정하기 위한 매크로
+// 클라이언트가 1명일 때 소켓기술자의 값은 3
+#define CLIENTNUM 3 
+// user구조체 배열의 갯수
+#define USERNUM 2	
 
+
+// NONE, BLACK, WHITE 바둑판의 값들을 설정하기 위한 매크로
+#define NONE 0		
 #define BLACK 1
 #define WHITE 2
 
-struct opt {		// 옵션을 담을 구조체 정의 및 선언
-	int u;			// u옵션의 set/clear를 확인해 주는 flag
-	int p;			// p옵션의 set/clear를 확인해 주는 flag
-}opt;
-
-int start = 0;				// 타이머 구현을 위한 전역변수
-int player = 0; 			// 옵션의 구현을 위한 변수 c와 로그인여부를 확인하는 sign변수를 선언한다.
-int sockfd;
+// 타이머 구현을 위한 전역변수
 int timer = 0;
+int start = 0;				
 
 
-// 오목판을 출력하는 함수이
+// 자신이 흑인지 백인지 구분하는 변수
+int player = 0;
+
+int sockfd;
+
+
+
+
+// 오목판을 출력하는 함수
 void print_board(int board[][14]){
+	// 판을 그리기 전에, 터미널의 내용을 모두 지운다.
 	system("clear");
+	// 모양대로 그리기
 	printf("| A │ B │ C │ D │ E │ F │ G │ H │ I │ J │ K │ L │ M │ N │\n");
 	printf("┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐───\n");
 
@@ -60,20 +68,17 @@ void print_board(int board[][14]){
 }
 
 
-/*
-들어온 입력을 토큰화 시켜 board에 이미 돌이 놓여져 있는 경우 다시 입력을 받는 함수
-*/
+//들어온 입력을 좌표로 변환하고, 잘못도니 입력의 경우 다시 입력받도록 구현
 void put_board(char * buf, int board[][14], int *i,int *j){
 	char temp[BUFSIZ];
 	char *temp_ptr;
 	int n,m;
 	
 	while(1){
-		strcpy(temp, buf);							// strtok() 함수는 원래의 문자열을 수정하기 때문에 temp변수에 복사해준다.
-		if(!(temp[1] == ',')){	// 문자열이 'ㅇ,ㅇ'로 이루어지지 않았다면 다시 입력을 받는다.
-			if(!strcmp(temp, "quit")){				// 문자열이 quit이라면 종료한다.
-				return;
-			}
+		// strtok() 함수는 원래의 문자열을 수정하기 때문에 temp변수에 복사해준다.
+		strcpy(temp, buf);		
+		// 문자열이 'ㅇ,ㅇ'로 이루어지지 않았다면 다시 입력을 받는다.					
+		if(!(temp[1] == ',')){	
 			printf("','를 이용해 띄어쓰기 없이 입력해 주세요.\n");
 			scanf("%s", buf);
 			continue;
@@ -99,7 +104,8 @@ void put_board(char * buf, int board[][14], int *i,int *j){
     		scanf("%s", buf);
 			continue;
 		}
-		if(board[n][m] != NONE){					// 이미 board에 BLACK이나 WHITE가 존재한다면 다시 입력을 받는다.
+		// 이미 board에 BLACK이나 WHITE가 존재한다면 다시 입력을 받는다.
+		if(board[n][m] != NONE){					
 			printf("돌이 이미 존재합니다. 다른 곳에 놓아주세요.\n");
     		printf("알맞은 위치 착수하여 주세요. 열: A~N   행: 1~14\n");
     		scanf("%s", buf);
@@ -112,10 +118,9 @@ void put_board(char * buf, int board[][14], int *i,int *j){
 	*j = m;
 }
 
-/*
-i, j의 값으로 board의 값을 세팅한다.
-count가 짝수라면 BLACK, 홀수라면 WHITE값을 board에 넣는다.
-*/
+
+//i, j의 값으로 board의 값을 세팅한다.
+//count가 짝수라면 BLACK, 홀수라면 WHITE값을 board에 넣는다.
 void set_board(int board[][14],int count, int i, int j){
 	
 	if ((count % 2) == 0) {
@@ -130,9 +135,8 @@ void set_board(int board[][14],int count, int i, int j){
     	}
 }
 
-/*
-send의 예외처리와 quit이 입력되면 종료하는 함수.
-*/
+
+//send의 예외처리와 quit이 입력되면 종료하는 함수.
 void my_send(int sock, char* msg){			// 소켓기술자 저장
 	if(send(sock, msg, BUFSIZ , 0)==-1){	// 메세지를 보낸다.
 		perror("send");
@@ -140,10 +144,9 @@ void my_send(int sock, char* msg){			// 소켓기술자 저장
 	}
 }
 
-/*
-recv의 예외처리를 포함한 함수
-방은 메세지값이 quit이라면 1을 리턴한다.
-*/
+
+//recv의 예외처리를 포함한 함수
+//받은 메세지가 경기가 끝났음을 알리는 경우, 1을 리턴한다.
 int my_recv(int sock, char *buf){
 	int n;
 	if((n = recv(sock, buf, BUFSIZ, 0)) == -1){
@@ -165,9 +168,7 @@ int my_recv(int sock, char *buf){
 	return 0;
 }
 
-/*
-소켓을 얻어오고 connect()함수를 모아놓은 함수
-*/
+//소켓을 얻어오고 connect()함수를 모아놓은 함수
 void connect_request(int *sockfd, struct sockaddr_in *server_addr)
 {
 	// socket을 얻어옴
@@ -190,8 +191,10 @@ void connect_request(int *sockfd, struct sockaddr_in *server_addr)
 void * omok(void* sd){
 	int sockfd = (intptr_t)sd;
 	char buf[BUFSIZ], name[BUFSIZ], pwd[BUFSIZ];
-	int board[14][14];								// 오목판 배열 선언
-	int count = 0, j = 0, i = 0;					// count : 흑돌 백돌을 정하기 위한 변수
+	// 오목판 배열 선언
+	int board[14][14];								
+	// count : 흑돌 백돌을 정하기 위한 변수, i,j는 좌표값
+	int count = 0, j = 0, i = 0;					
 
 	
 	//바둑판 초기화
@@ -202,27 +205,36 @@ void * omok(void* sd){
 	}
 	system("clear");
 
-	my_recv(sockfd, buf);						// client 0 : 상대방을 기다리는 중입니다. | client 1 : 대국을 시작합니다.
+	// client 0 : 상대방을 기다리는 중입니다. | client 1 : 대국을 시작합니다.
+	my_recv(sockfd, buf);					
 	printf("%s",buf);
-	if(strcmp(buf,"상대방을 기다려주세요.\n")){ // client 1 인 경우 
-		print_board(board);						// 오목판을 프린트한다.
+	if(strcmp(buf,"상대방을 기다려주세요.\n")){ 
+		print_board(board);						
 		printf("상대방의 차례입니다.\n");	
-		player = 1;								// client 1 이기 때문에 player를 1로 셋한다.
+		// client 1 이기 때문에 player를 1로 셋한다.
+		player = 1;								
 		start = 1;
 	}
-	if(my_recv(sockfd, buf)){					// client 0 : 대국을 시작합니다 .	| client 1 : 상대방의 메세지
-		start = 2;								// timer쓰레드를 종료시키기 위해 start 변수를 2로 설정해 준다.
+
+	// client 0 : 대국을 시작합니다 .	| client 1 : 상대방의 메세지
+	if(my_recv(sockfd, buf)){					
+		// timer쓰레드를 종료시키기 위해 start 변수를 2로 설정해 준다.
+		start = 2;								
 		return 0;
 	}	
 	
 	print_board(board);
 	start = 1;
-	if(player){									// client 1인경우 상대방의 메세지를 받기 때문에
-		put_board(buf, board, &i, &j);			// put_board() 와 set_board()를 해준다.
-		set_board(board, count, i, j);			
-		count++;								// client의 차례가 지났으니 count하나 더해준다.
+	if(player){		
+		// 입력받은 값을 기반으로 연산						
+		// put_board() 와 set_board()를 해준다.
+		put_board(buf, board, &i, &j);			
+		set_board(board, count, i, j);
+		// client의 차례가 지났으니 count하나 더해준다.(다음 차례에 다른 사람이 둔다는 것을 의미)			
+		count++;								
 	}else{
-		printf("%s",buf);						// client 0인경우 "대국을 시작합니다."라는 메세지를 출력한다.
+		// client 0인경우 "대국을 시작합니다."라는 메세지를 출력한다.
+		printf("%s",buf);						
 	}
 	
 	while(1){
@@ -232,7 +244,8 @@ void * omok(void* sd){
 		printf("종료를 원하시면 quit을 적어주세요\n");
 		printf("돌을 둘 좌표를 입력하세요 열: A~N   행: 1~14\n");
 		printf("입력 [ex) H,8] : ");
-		scanf("%s",buf);						// 보낼 내용을 입력받는다.
+		// 보낼 내용을 입력받는다.
+		scanf("%s",buf);						
 		
 		put_board(buf, board,&i, &j);
 		set_board(board, count, i, j);
@@ -241,11 +254,13 @@ void * omok(void* sd){
 		print_board(board);
 		
 		printf("상대방의 차례입니다.\n");	
-		my_send(sockfd, buf);	
-		if(!strcmp(buf, "quit")){				// 보낸 내용이 quit이라면 서버에 quit 메세지를 보내고 종료한다.
+		my_send(sockfd, buf);
+
+		// 보낸 내용이 quit이라면 서버에 quit 메세지를 보내고 종료한다.	
+		if(!strcmp(buf, "quit")){				
 			printf("기권하였습니다.\n");
 			break ;
-		}									// seg fault발생한다. 따라서 send() 뒤에서 체크한다. 
+		}									
 		
 		if(my_recv(sockfd, buf)){
 			break;
@@ -261,9 +276,8 @@ void * omok(void* sd){
 	return 0;
 }
 
-/*
-타이머를 구현한 쓰레드
-*/
+
+// 타이머를 쓰레드를 활용하여 구현,
 void * counting(void * arg){
 	char time[BUFSIZ];
 
@@ -277,6 +291,11 @@ void * counting(void * arg){
 		}
 	}
 	printf("총 대국 시간 : %d초\n",timer);
+	
+	if(player = 1) {
+		sprintf(time,"%d",timer);
+		my_send(sockfd, time);
+		}	
 	return 0;
 }
 
@@ -291,8 +310,6 @@ int main(int argc, char *argv[])
 	int i = 0;
 	int c = 0;
 
-	extern char* optarg;
-	extern int optind;
 
 	printf("		---------------------------------------------------\n\n");
 
@@ -318,8 +335,7 @@ int main(int argc, char *argv[])
 	pthread_join(omok_thread, (void **)&thread_result);
 	pthread_join(counting_thread, (void **)&thread_result);
 
-
-
+	sleep(2);
 
 
 	printf("client-quited\n");

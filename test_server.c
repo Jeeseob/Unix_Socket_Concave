@@ -13,7 +13,8 @@
 #define PORTNUM 9000
 #define CLIENTNUM 2 
 
-#define NONE 0		// NONE, BLACK, WHITE 바둑판의 값들을 설정하기 위한 매크로
+// NONE, BLACK, WHITE 바둑판의 값들을 설정하기 위한 매크로
+#define NONE 0		
 #define BLACK 1
 #define WHITE 2
 
@@ -31,9 +32,11 @@ int game = 1;
 
 int Win_Check() {
 
-   for (i = 2; i < 13; i++) {                     // 가로 또는 세로를 검사하기 위한 반복문
+	// 가로 또는 세로에 5줄이 있는지 확인
+   for (i = 2; i < 13; i++) {                     
       for (j = 0; j < 15; j++) {                  
-         if (board[j][i - 2] == 1 && board[j][i - 1] == 1 && board[j][i] == 1 && board[j][i + 1] == 1 && board[j][i + 2] == 1) {   // 가로방향
+      	 // 가로
+         if (board[j][i - 2] == 1 && board[j][i - 1] == 1 && board[j][i] == 1 && board[j][i + 1] == 1 && board[j][i + 2] == 1) { 
             printf("*** 흑돌 승리 ***\n");
             return 1;
          }
@@ -41,8 +44,8 @@ int Win_Check() {
             printf("*** 백돌 승리 ***\n");
             return 1;
          }
-
-         else if (board[i - 2][j] == 1 && board[i - 1][j] == 1 && board[i][j] == 1 && board[i + 1][j] == 1 && board[i + 2][j] == 1) {   // 세로방향
+         // 세로
+         else if (board[i - 2][j] == 1 && board[i - 1][j] == 1 && board[i][j] == 1 && board[i + 1][j] == 1 && board[i + 2][j] == 1) {   
             printf("*** 흑돌 승리 ***\n");
             return 1;
          }
@@ -52,18 +55,19 @@ int Win_Check() {
          }
       }
    }
-
-   for (i = 2; i < 13; i++) {                  // 대각선
+	// 대각선 중에 5줄이 있는지 확인
+   for (i = 2; i < 13; i++) {                  
       for (j = 2; j < 13; j++) {               
-         if (board[j - 2][i - 2] == 1 && board[j - 1][i - 1] == 1 && board[j][i] == 1 && board[j + 1][i + 1] == 1 && board[j + 2][i + 2] == 1) { //왼쪽 위에서 오른쪽 밑으로 내려가는 대각선
+      	//왼쪽 위에서 오른쪽 밑으로 내려가는 대각선
+         if (board[j - 2][i - 2] == 1 && board[j - 1][i - 1] == 1 && board[j][i] == 1 && board[j + 1][i + 1] == 1 && board[j + 2][i + 2] == 1) {
             return 1;
          }
          else if (board[j - 2][i - 2] == 2 && board[j - 1][i - 1] == 2 && board[j][i] == 2 && board[j + 1][i + 1] == 2 && board[j + 2][i + 2] == 2) {
             printf("*** 백돌 승리 ***\n");
             return 1;
          }
-
-         else if (board[j + 2][i - 2] == 1 && board[j + 1][i - 1] == 1 && board[j][i] == 1 && board[j - 1][i + 1] == 1 && board[j - 2][i + 2] == 1) { // 왼쪽 아래에서 오른쪽 위로 올라가는 대각선
+         // 왼쪽 아래에서 오른쪽 위로 올라가는 대각선
+         else if (board[j + 2][i - 2] == 1 && board[j + 1][i - 1] == 1 && board[j][i] == 1 && board[j - 1][i + 1] == 1 && board[j - 2][i + 2] == 1) { 
             printf("*** 흑돌 승리 ***\n");
             return 1;
          }
@@ -72,7 +76,8 @@ int Win_Check() {
             return 1;
          }
       }
-   } //조건이 갖춰지면 1, 아니면 0.
+   } 
+   // 승리한 돌이 있는경우, 1 없는 경우 0 반환
    return 0;
 }
 
@@ -81,13 +86,16 @@ int Win_Check() {
 
 
 
-
+// socket으로 데이터를 보낼 때, 오류처리
 void my_send(int sock, char* msg){
 	if(send(sock, msg, BUFSIZ, 0) == -1){
 		perror("send");
 		exit(0);
 	}
 }
+
+
+// socket으로 데이터를 받을 때, 오류처리
 void my_recv(int sock, char * buf)
 {
 	int n;
@@ -108,9 +116,11 @@ void finish_with_error(MYSQL *conn){
 
 
 
-
+// board의 좌표를 기반으로, 바둑판을 그려준다.
 void print_board(){
+	// 판을 그리기 전에, 터미널의 내용을 모두 지운다.
 	system("clear");
+	// 모양대로 그리기
 	printf("| A │ B │ C │ D │ E │ F │ G │ H │ I │ J │ K │ L │ M │ N │\n");
 	printf("┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐───\n");
 
@@ -138,32 +148,27 @@ void print_board(){
 }
 
 
-
+// 입력받은  값을 좌표값으로 변환한다.
 void put_board(char * buf){
 	char temp[BUFSIZ];
 	char *temp_ptr;
-	int n,m;
-	 
-	m = buf[0] - 65;
-	n = (int)strtol(buf+2, &temp_ptr, 10);
-		
-	
-	n--;	// 배열은 0~13의 값을 사용하기 때문에 하나씩 값을 빼준다.
 
-	// set_board()함수가 i, j값을 사용하기 때문에 call by reference로 값을 바꿔준다.
-	i = n;
-	j = m;
+	//char 형에서 65를 배면, 해당하는 숫자값이 나온다.
+	j = buf[0] - 65;
+	i = (int)strtol(buf+2, &temp_ptr, 10);
+		
+	// 배열은 0~13의 값을 사용하기 때문에 하나씩 값을 빼준다.
+	i--;	
 }
 
+// 입력받은 값을 기반으로 board에 흑돌, 백돌을 어디에 위치시킬지 입력으로 넣는다.
 void set_board(){
-	
 	if ((count % 2) == 0) {
         board[i][j] = BLACK;
     }
     else {
         board[i][j] = WHITE;
     }
- 
 }
 
 
@@ -183,23 +188,26 @@ void connect_request(int *sockfd, struct sockaddr_in *my_addr)
 		exit(1);
 	}
 	
+	// 소켓 연결
 	memset(my_addr->sin_zero, 0, sizeof my_addr->sin_zero);
 	
 	my_addr->sin_family = AF_INET;
 	my_addr->sin_port = htons(PORTNUM);
-	my_addr->sin_addr.s_addr = htonl(INADDR_ANY);			// 이 컴퓨터에 존재하는 랜카드 중 사용가능한 랜카드의 IP사용
+	my_addr->sin_addr.s_addr = htonl(INADDR_ANY);			
 	
 	
 	if (setsockopt(*sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1) {
 		perror("setsockopt");
 		exit(1);
 	}
-		
-	if (bind(*sockfd, (struct sockaddr *)my_addr, sizeof(struct sockaddr)) == -1) {	// 소켓에 이름지정
+	
+	// 소켓에 이름지정
+	if (bind(*sockfd, (struct sockaddr *)my_addr, sizeof(struct sockaddr)) == -1) {
 		perror("Unable to bind");
 		exit(1);
 	}
-	if (listen(*sockfd, 5) == -1) {	// 클라이언트 연결대기. 큐의 길이 5
+	// 클라이언트 연결대기. 큐의 길이 5
+	if (listen(*sockfd, 5) == -1) {
 		perror("listen");
 		exit(1);
 	}
@@ -212,13 +220,12 @@ int main()
 	int nfds, i; // nfds : 소켓개수 + 1
 	struct sockaddr_in my_addr, client_addr;
 	int sockfd= 0, clisd, clilen = sizeof(client_addr);
-	char wait_msg[BUFSIZ], buf[BUFSIZ], idBlack[BUFSIZ], idWhite[BUFSIZ], winner[BUFSIZ], query[BUFSIZ];
+
+	// 데이터를 보내고 받을 문자열들
+	char wait_msg[BUFSIZ], buf[BUFSIZ], idBlack[BUFSIZ], idWhite[BUFSIZ], winner[BUFSIZ],time[BUFSIZ], query[BUFSIZ];
 	int msglen, n;
 	int member_num =0;
 	int member_sd[CLIENTNUM];
-
-	int thread_result;
-	pthread_t counting_thread;
 	
 	int once = 1;
 	count = 0;
@@ -232,10 +239,6 @@ int main()
 		fprintf(stderr,"%s\n",mysql_error(conn));
 		exit(1);
 	}
-	
-
-
-
 
 	/*
 
@@ -244,6 +247,7 @@ int main()
 	
 
 	*/
+
 	if(mysql_real_connect(conn,"localhost","root","rootroot","unix_omok",0,NULL,0)==NULL) {
 		finish_with_error(conn);
 	}
@@ -267,17 +271,20 @@ int main()
 
 	
 	while(game){
-		FD_ZERO(&read_fds);	// read_fds를 0으로 초기화
-		if(member_num > 0) {						// 오목에 참가한 사람이 있으면
-			nfds = member_sd[member_num -1] + 1;	// 마지막으로 참가한 클라이언트 기술자 + 1
+		FD_ZERO(&read_fds);
+
+		if(member_num > 0) {						
+			nfds = member_sd[member_num -1] + 1;	
 		}
-		else {										// 없으면
-			nfds = sockfd + 1;						// 서버 기술자 + 1
+		else {										
+			nfds = sockfd + 1;						
 		}
+
+		// read_fds에 sockfd 추가
+		FD_SET(sockfd, &read_fds);					
 		
-		FD_SET(sockfd, &read_fds);					// read_fds에 sockfd 추가
-		
-		for(i=0;i < member_num ; i++){				// 클라이언트들을 read_fds에 추가
+		// 클라이언트들을 read_fds에 추가
+		for(i=0;i < member_num ; i++){				
 			FD_SET(member_sd[i], &read_fds);
 		}
 		
@@ -293,13 +300,13 @@ int main()
 				exit(1);
 			}
 			
-			member_sd[member_num++] = clisd; // 연결 요청한 클라이언트 소켓 기술자를 배열에 추가
+			// 연결 요청한 클라이언트 소켓 기술자를 배열에 추가
+			member_sd[member_num++] = clisd; 
 			printf("%d번 사용자 연결\n", clisd);
 			
 			
-			/*
-			초기에 상대방이 없을경우 기다려달라는 메세지 출력
-			*/
+
+			//초기에 상대방이 없을경우 기다려달라는 메세지 출력
 			if(member_num == 1 && once){
 
 				// 먼저 들어온 client가 흑돌을 잡게되고, 흑 id로 저장
@@ -313,9 +320,10 @@ int main()
 			}
 
 
-			
-			if(member_num >= 2 ) {	// 클라이언트가 2명이 되면 대국을 시작
-				if(!once){			// 대국을 시작한다는 메세지는 시작 1번만 나오므로 once 변수로 단 1번만 출력한다.
+			// 클라이언트가 2명이 되면 대국을 시작
+			if(member_num >= 2 ) {	
+				if(!once){		
+					// 대국을 시작한다는 메세지는 시작 1번만 나오므로 once 변수로 단 1번만 출력한다.
 
 					// 나중에 들어온 client가 백돌을 잡게되고, 백 id로 저장
 					my_recv(member_sd[1], idWhite);
@@ -338,12 +346,10 @@ int main()
 				반복
 				*/
 				int start = 1;	
-				// pthread_create(&counting_thread, NULL, counting, NULL);
-				// pthread_join(counting_thread, (void **)&thread_result);
-
 				while(1){
 					my_recv(member_sd[0], buf);
 					
+					// 입력받은 값이 quit이라면, 기권으로 받아들인다.
 					if(!strcmp(buf, "quit")) {
 						strcpy(winner,idWhite);
 						start = 2;	
@@ -356,6 +362,7 @@ int main()
 					set_board();
 					print_board();
 
+					// 입력받은 값을 기준으로 승부가 결정 났는지 여부를 판단한다.
 					if(Win_Check()){
 						start = 2;
 						my_send(member_sd[0], "winner");
@@ -369,6 +376,7 @@ int main()
 					count ++;
 					//printf("%s\n", buf);
 
+					// 흑과 백을 바꿔서 위와 같은 로직 그대로 실행
 
 					my_recv(member_sd[1], buf);
 					if(!strcmp(buf, "quit")) {
@@ -401,12 +409,14 @@ int main()
 		}
 	}
 
+	my_recv(member_sd[0],time)
 
-	snprintf(query,64,"insert into omok_data('id_black','id_white','winner','play_time') values('%s','%s','%s','%d')",idBlack,idWhite,winner,1234);
+
+	sprintf(query,64,"insert into omok_data('id_black','id_white','winner','play_time') values('%s','%s','%s','%s')",idBlack,idWhite,winner,time);
 		
 	// printf 구문은 확인을 위한 부분이라고 보면 됩니다.
 	printf("-----------------------------------------\n");
-	printf("%s\n",query);
+	printf("%s ",query);
 
 	//sql_query는 정상일 경우 0 아닐 경우엔 !=0
 	if(mysql_query(conn,query)) {
@@ -419,13 +429,9 @@ int main()
 		printf("-----------------------------------------\n");
 	}
 
-	printf("%s\t",idBlack);
+	printf("winner is %s\n",winner);
 
-	printf("%s\t",idWhite);
-
-	printf("%s\t",winner);
-
-	printf("%d",1234);
+	printf("play time is %ssec",time);
 
 
 
