@@ -359,7 +359,7 @@ int main(int argc, char *argv[])
 		sprintf(time,"%d",timer);
 		my_send(sockfd, time);
 	}
-	//test
+	
 	my_recv(sockfd,buf);
 
 	printf("client-quited\n");
