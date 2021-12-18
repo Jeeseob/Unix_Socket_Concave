@@ -404,6 +404,8 @@ int main()
 	my_send(member_sd[1], buf);
 	my_send(member_sd[0], buf);
 		
+	//test
+		
 	// printf 구문은 확인을 위한 부분이라고 보면 됩니다.
 	printf("-----------------------------------------\n");
 	printf("%s ",query);
