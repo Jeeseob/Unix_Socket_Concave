@@ -228,21 +228,19 @@ void * omok(void* sd){
 	// client 0 : 상대방을 기다리는 중입니다. | client 1 : 대국을 시작합니다.
 	my_recv(sockfd, buf);					
 	printf("%s",buf);
+	//	백인 경우,
 	if(strcmp(buf,"상대방을 기다려주세요.\n")){ 
 		print_board(board);						
 		printf("상대방의 차례입니다.\n");	
 		// client 1 이기 때문에 player를 1로 셋한다.
-		player = 1;								
 		start = 1;
+		player = 1;								
 	}
 
 	// client 0 : 대국을 시작합니다 .	| client 1 : 상대방의 메세지
-	if(my_recv(sockfd, buf)){					
-		// timer쓰레드를 종료시키기 위해 start 변수를 2로 설정해 준다.
-		start = 2;								
-		return 0;
-	}	
+	my_recv(sockfd, buf);
 	start = 1;
+
 	print_board(board);
 	if(player){		
 		// 입력받은 값을 기반으로 연산						
@@ -357,13 +355,10 @@ int main(int argc, char *argv[])
 	pthread_join(counting_thread, (void **)&thread_result);
 
 	// 모두 종료된 후 타이머로 계산된 시간 전송
-	if(player == 1) {
+	if(player) {
 		sprintf(time,"%d",timer);
 		my_send(sockfd, time);
 	}
-	// 잠시 대기 후 종료
-	sleep(2);
-
 
 	printf("client-quited\n");
 	close(sockfd);
