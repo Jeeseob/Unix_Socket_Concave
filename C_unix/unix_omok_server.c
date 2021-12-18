@@ -397,11 +397,11 @@ int main()
 	strcat(query,idWhite);
 	strcat(query,"','");
 	strcat(query,winner);
-	strcat(query,"','");
+	strcat(query,"',");
 	strcat(query,time);
-	strcat(query,"')");
+	strcat(query,")");
 	//test
-	
+
 	my_send(member_sd[1], buf);
 	my_send(member_sd[0], buf);
 		

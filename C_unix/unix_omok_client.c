@@ -355,12 +355,11 @@ int main(int argc, char *argv[])
 	pthread_join(counting_thread, (void **)&thread_result);
 
 	// 모두 종료된 후 타이머로 계산된 시간 전송
-	if(player) {
-		sprintf(time,"%d",timer);
-		my_send(&sockfd, time);
-	}
 
-	my_recv(&sockfd,buf);
+	sprintf(time,"%d",timer);
+	my_send(sockfd, time);
+
+	my_recv(sockfd,buf);
 
 	printf("client-quited\n");
 	close(sockfd);
