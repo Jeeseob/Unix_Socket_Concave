@@ -400,7 +400,8 @@ int main()
 	strcat(query,"','");
 	strcat(query,time);
 	strcat(query,"')");
-
+	//test
+	
 	my_send(member_sd[1], buf);
 	my_send(member_sd[0], buf);
 		
