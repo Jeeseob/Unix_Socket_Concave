@@ -400,6 +400,9 @@ int main()
 	strcat(query,"','");
 	strcat(query,time);
 	strcat(query,"')");
+
+	my_send(member_sd[1], buf);
+	my_send(member_sd[0], buf);
 		
 	// printf 구문은 확인을 위한 부분이라고 보면 됩니다.
 	printf("-----------------------------------------\n");

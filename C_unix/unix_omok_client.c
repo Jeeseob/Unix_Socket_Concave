@@ -360,6 +360,8 @@ int main(int argc, char *argv[])
 		my_send(sockfd, time);
 	}
 
+	my_recv(sockfd,buf);
+
 	printf("client-quited\n");
 	close(sockfd);
 	return 0;
