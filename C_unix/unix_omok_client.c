@@ -1,6 +1,7 @@
 // 타이머를 구현하기 위해 pthread를 활용해서 개발하였습니다.
-// 컴파일 후 실행시 아래 명령어로 실행 부탁드립니다.
-// ./unix_omok_client -pthread 
+
+// 컴파일시 아래 명령어로 컴파일 부탁드립니다.
+// gcc unix_omok_client.c -o unix_omok_client.c -pthread
 
 #include <stdio.h>
 #include <string.h>
